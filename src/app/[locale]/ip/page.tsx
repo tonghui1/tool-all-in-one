@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Globe, Map, Building, Cloud, Cpu, Landmark, Clock, MapPin } from "lucide-react";
@@ -51,30 +51,8 @@ export default function IpLookup() {
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 获取当前IP
-  useEffect(() => {
-    const fetchCurrentIp = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        // 使用免费API获取当前IP
-        const response = await fetch("https://api.ipify.org?format=json");
-        const data = await response.json();
-        setCurrentIp(data.ip);
-
-        // 获取当前IP的信息
-        await fetchIpInfo(data.ip);
-      } catch (error) {
-        setError(tError("query_failed"));
-        setLoading(false);
-      }
-    };
-
-    fetchCurrentIp();
-  }, []);
-
   // 获取IP详细信息
-  const fetchIpInfo = async (ip: string) => {
+  const fetchIpInfo = useCallback(async (ip: string) => {
     try {
       // 使用免费的ipapi.co API
       const response = await fetch(`https://ipapi.co/${ip}/json/`);
@@ -94,14 +72,36 @@ export default function IpLookup() {
         setIpInfo(data);
         setError(null);
       }
-    } catch (error: any) {
-      setError(`${tError("query_failed")}: ${error.message}`);
+    } catch (err: any) {
+      setError(`${tError("query_failed")}: ${err.message}`);
       setIpInfo(null);
     } finally {
       setLoading(false);
       setSearchLoading(false);
     }
-  };
+  }, [tError]);
+
+  // 获取当前IP
+  useEffect(() => {
+    const fetchCurrentIp = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // 使用免费API获取当前IP
+        const response = await fetch("https://api.ipify.org?format=json");
+        const data = await response.json();
+        setCurrentIp(data.ip);
+
+        // 获取当前IP的信息
+        await fetchIpInfo(data.ip);
+      } catch {
+        setError(tError("query_failed"));
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentIp();
+  }, [fetchIpInfo, tError]);
 
   // 查询IP
   const handleSearch = () => {

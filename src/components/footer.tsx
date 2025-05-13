@@ -2,8 +2,8 @@
 
 import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
-import { Github, Twitter, ExternalLink, Mail, HelpCircle, Shield, BookOpen } from "lucide-react"
-import { useSidebar } from "@/components/ui/sidebar"
+import { CiTwitter, CiMail } from 'react-icons/ci';
+import { FaGithub } from "react-icons/fa";
 import {
   Tooltip,
   TooltipContent,
@@ -14,7 +14,6 @@ import { toast } from "sonner"
 import { useTranslations } from "next-intl"
 
 export function Footer() {
-  const { open } = useSidebar()
   const currentYear = new Date().getFullYear()
   const email = "472754759@qq.com"
   const t = useTranslations("Footer")
@@ -52,7 +51,7 @@ export function Footer() {
                 className="text-gray-600 hover:text-black transition-colors"
                 aria-label="GitHub"
               >
-                <Github size={18} />
+                <FaGithub size={18} />
               </Link>
               <Link 
                 href="https://x.com/thom921104" 
@@ -61,7 +60,7 @@ export function Footer() {
                 className="text-gray-600 hover:text-blue-500 transition-colors"
                 aria-label="Twitter"
               >
-                <Twitter size={18} />
+                <CiTwitter size={18} />
               </Link>
               
               <TooltipProvider>
@@ -72,7 +71,7 @@ export function Footer() {
                       className="text-gray-600 hover:text-green-600 transition-colors"
                       aria-label="Email"
                     >
-                      <Mail size={18} />
+                      <CiMail size={18} />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">

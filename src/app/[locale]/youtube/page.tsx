@@ -78,7 +78,7 @@ export default function YoutubeDownloader() {
         document.body.removeChild(a);
         
         toast.success(t("error_toast_1"));
-      } catch (downloadError: any) {
+      } catch {
         // 如果打开失败，提供视频链接
         toast.info(t("error_toast_2"), {
           description: t("error_toast_3"),

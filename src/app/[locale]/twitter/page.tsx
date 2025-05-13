@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Download, AlertCircle, Loader2, Info } from "lucide-react";
+import { Download, AlertCircle, Loader2 } from "lucide-react";
 import { 
   Accordion,
   AccordionContent,
@@ -81,7 +81,7 @@ export default function TwitterDownloader() {
         document.body.removeChild(a);
         
         toast.success(t("error_toast_1"));
-      } catch (downloadError: any) {
+      } catch {
         // 如果打开失败，提供视频链接
         toast.info(t("error_toast_2"), {
           description: t("error_toast_3"),

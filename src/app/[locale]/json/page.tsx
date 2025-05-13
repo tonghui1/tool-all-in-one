@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, Download, AlertCircle, Trash, FileCode } from "lucide-react";
+import { Copy, Download, AlertCircle, Trash } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -15,14 +14,17 @@ import {
 import { Toaster, toast } from "sonner";
 import { useTranslations } from "next-intl";
 
-
+// 定义JSON数据类型
+type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
+interface JsonObject { [key: string]: JsonValue }
+type JsonArray = JsonValue[];
 
 export default function JsonFormatter() {
   const [jsonInput, setJsonInput] = useState<string>("");
   const [jsonOutput, setJsonOutput] = useState<string>("");
-  const [jsonTree, setJsonTree] = useState<any>(null);
+  const [jsonTree, setJsonTree] = useState<JsonValue | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [indentSize] = useState<number>(2); // 保留状态但移除UI控制
+  const [indentSize] = useState<number>(2);
   const t = useTranslations("Json");
 
   // 示例JSON
@@ -42,13 +44,8 @@ export default function JsonFormatter() {
   }
 }`;
 
-  useEffect(() => {
-    // 初始加载示例
-    handleFormat(jsonExample);
-  }, []);
-
   // 格式化JSON
-  const handleFormat = (input = jsonInput) => {
+  const handleFormat = useCallback((input = jsonInput) => {
     try {
       if (!input.trim()) {
         setJsonOutput("");
@@ -66,12 +63,18 @@ export default function JsonFormatter() {
       setJsonOutput(formatted);
       setJsonTree(parsed);
       setError(null);
-    } catch (err: any) {
-      setError(`JSON解析错误: ${err.message}`);
-      toast.error(`JSON解析错误: ${err.message}`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '未知错误';
+      setError(`JSON解析错误: ${errorMessage}`);
+      toast.error(`JSON解析错误: ${errorMessage}`);
       setJsonTree(null);
     }
-  };
+  }, [jsonInput, indentSize]);
+
+  useEffect(() => {
+    // 初始加载示例
+    handleFormat(jsonExample);
+  }, [jsonExample, handleFormat]);
 
   // 复制到剪贴板
   const handleCopy = () => {
@@ -125,7 +128,7 @@ export default function JsonFormatter() {
         setJsonOutput(formatted);
         setJsonTree(parsed);
         setError(null);
-      } catch (err) {
+      } catch {
         // 仅在用户停止输入后显示错误
         setError(null); // 先清除错误，避免用户输入过程中频繁显示错误
       }
@@ -143,8 +146,9 @@ export default function JsonFormatter() {
       if (jsonInput.trim()) {
         try {
           JSON.parse(jsonInput);
-        } catch (err: any) {
-          setError(`JSON解析错误: ${err.message}`);
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '未知错误';
+          setError(`JSON解析错误: ${errorMessage}`);
         }
       }
     }, 500);
@@ -152,13 +156,13 @@ export default function JsonFormatter() {
     return () => clearTimeout(timer);
   }, [jsonInput]);
 
-  // 渲染JSON树视图 - 修改为自动展开所有节点
-  const renderJsonTree = (data: any, path: string = "$", isExpanded: boolean = true) => {
+  // 渲染JSON树视图
+  const renderJsonTree = (data: JsonValue, path: string = "$", isExpanded: boolean = true) => {
     if (data === null) return <span className="text-blue-600">null</span>;
 
     if (typeof data !== "object") {
       if (typeof data === "string")
-        return <span className="text-green-600">"{data}"</span>;
+        return <span className="text-green-600">&quot;{data}&quot;</span>;
       if (typeof data === "number" || typeof data === "boolean")
         return <span className="text-blue-600">{String(data)}</span>;
       return <span>{String(data)}</span>;
@@ -199,7 +203,7 @@ export default function JsonFormatter() {
             <div className="ml-6 border-l-2 border-dashed border-gray-300 pl-4">
               {Object.entries(data).map(([key, value], index) => (
                 <div key={index} className="mb-1">
-                  <span className="text-purple-600 mr-2">"{key}":</span>
+                  <span className="text-purple-600 mr-2">&quot;{key}&quot;:</span>
                   {renderJsonTree(value, `${path}.${key}`, isExpanded)}
                 </div>
               ))}

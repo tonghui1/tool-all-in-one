@@ -1,21 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button"
-import Image from "next/image";
 import Link from "next/link";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  Card
 } from "@/components/ui/card"
 import { Inbox, Timer, FileJson} from "lucide-react"
 import { CiTwitter , CiYoutube } from 'react-icons/ci';
 import { TbBrandBilibili } from "react-icons/tb";
-import { useTranslations, useLocale } from "next-intl";
-import { use } from "react";
+import { useTranslations } from "next-intl";
 
 export default function Home() {
   const t = useTranslations("Home");

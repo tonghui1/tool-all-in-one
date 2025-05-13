@@ -19,6 +19,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
       }
     }, [value])
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleValueChange = React.useCallback((newValue: string) => {
       setTabValue(newValue)
       onValueChange?.(newValue)
@@ -36,6 +37,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
 )
 Tabs.displayName = "Tabs"
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(

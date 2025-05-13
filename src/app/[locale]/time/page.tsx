@@ -56,7 +56,7 @@ export default function Time() {
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const defaultZone = getCityByTimeZone(userTimeZone);
       setSelectedZone(defaultZone);
-    } catch (error) {
+    } catch {
       setSelectedZone(timeZones[0]);
     }
   }, []);
@@ -87,8 +87,8 @@ export default function Time() {
         
         setCurrentTime(timeString);
         setCurrentDate(dateString);
-      } catch (error) {
-        console.error("格式化时间出错:", error);
+      } catch {
+        // 忽略错误
       }
     };
 
