@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     // 查询 tl_tool 表的所有数据
     const tools = await prisma.tl_tool.findMany()
