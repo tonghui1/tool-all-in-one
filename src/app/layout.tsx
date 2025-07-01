@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/next';
+
 export default function RootLayout({
   children,
 }: {
@@ -7,6 +9,7 @@ export default function RootLayout({
     <html suppressHydrationWarning>
       <body className="bg-background text-foreground">
         {children}
+        <Analytics />
       </body>
     </html>
   )
